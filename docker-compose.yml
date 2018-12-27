@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+
+    # The Laravel Application
+    cms_php:
+        container_name: laravel_cms
+        build: ./local
+        volumes:
+            - ./UserManagement/:/var/www/html
+        links:
+            - cms_mysql
+        ports:
+            - 8080:80
+        depends_on:
+            - "cms_mysql"
+        environment:
+            - "DB_PORT=3306"
+            - "DB_HOST=cms_mysql"
+
+    # The Database
+    cms_mysql:
+        image: mysql:5.7
+        volumes:
+            - "./db:/docker-entrypoint-initdb.d"
+            - "./dbdata:/var/lib/mysql"
+        environment:
+            - "MYSQL_DATABASE=usermanagement"
+            - "MYSQL_USER=admin"
+            - "MYSQL_PASSWORD=secret"
+            - "MYSQL_ROOT_PASSWORD=jivan"
+        ports:
+            - "3301:3306"
